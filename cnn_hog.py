@@ -25,3 +25,31 @@ faces_hog = hog_face_detector(image, 1)
 end = time.time()
 print("Execution Time (in seconds) :")
 print("HOG : ", format(end - start, '.2f'))
+
+# loop over detected faces
+for face in faces_hog:
+    x = face.left()
+    y = face.top()
+    w = face.right() - x
+    h = face.bottom() - y
+
+    # draw box over face
+    cv2.rectangle(image, (x,y), (x+w,y+h), (0,255,0), 2)
+    start = time.time()
+
+# apply face detection (cnn)
+faces_cnn = cnn_face_detector(image, 1)
+
+end = time.time()
+print("CNN : ", format(end - start, '.2f'))
+
+# loop over detected faces
+for face in faces_cnn:
+    x = face.rect.left()
+    y = face.rect.top()
+    w = face.rect.right() - x
+    h = face.rect.bottom() - y
+
+     # draw box over face
+    cv2.rectangle(image, (x,y), (x+w,y+h), (0,0,255), 2)
+    cv2_imshow(image)
