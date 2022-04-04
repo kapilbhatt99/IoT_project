@@ -1,0 +1,140 @@
+{% load static %}
+<html>
+
+<head>
+  <title>TechnoBugs</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link rel = "stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://vjs.zencdn.net/6.6.3/video-js.css">
+  <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/white_cctv.png' %}"
+    />
+<style>
+#result{
+  color: black;
+  border:1px solid #777777;
+  border-radius: 2px;
+}
+  .border-green{
+	border-left: 10px;border-left-color: green;border-left-style:solid
+}
+.border-red{
+	border-left: 10px;border-left-color: red;border-left-style:solid
+}
+ #playerContainer,
+            .player {
+                width: 100%;
+                height: auto;
+                min-height: 400px;
+                background-color: black;
+                outline: none;
+            }
+            .vjs-big-play-button {
+                display: none !important;
+            }
+</style>
+	</head>
+	<body>
+		<div>
+			<nav class="navbar navbar-expand-xl navbar-dark bg-dark">
+				<div>          
+  <a class="navbar-brand" href="postsign" style="font-size: 20px;"><img style="height: 30px;" src="{% static 'images/white_cctv.png' %}">&nbsp;<b style="font-size: 25px;">TechnoBugs</b></a>
+</div>
+ <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+  <div class="form-inline my-2 my-lg-0">
+    <!-- <form class="form-inline my-2 my-lg-0" method="POST" action="gui1.html"> -->
+   <!-- 	<button type="button" class="btn btn-light"  onclick="openCalender()" ><i class="fa fa-calendar calender"style="padding:4px;"></i></button>&nbsp 
+ -->
+<!--    	  <button class="fa fa-calendar btn btn-light" fa fa-calendar btn btn-light></button>&nbsp -->
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search">
+      <button class="btn btn-secondary my-2 my-sm-0 btn-sm" >
+        <span class="fa fa-search" id="butt" style="font-size:15px;color:white;padding:6px;"></span>
+      </button>
+    </div>
+      &nbsp;
+      <div class="form-inline my-2 my-lg-0">
+        <button class="btn btn-primary" onclick="unregistered()">Unregistered</button>&nbsp;
+        <button class="btn btn-danger my-2 my-sm-0" type="submit" onclick="window.location.href = '/logout';"><span class="fa fa-power-off" style="padding: 4px"></span></button>
+      </div>
+    </div>
+</nav>
+</div>
+		<div class="row" style="margin-right: 0;margin-left: 0;height: 100%">
+    <div class="col-lg-8 col-md-8 col-sm-8"><br><br><div id="playerContainer"><video id="videojs" class="player video-js vjs-default-skin" controls autoplay></video></div>Live Camera Stream</div>
+    <div class="col-lg-4 col-md-4 col-sm-4" style="background-color: lightgrey;" id="logs1">
+    	<ul class="d-none list-group" style="position:absolute;z-index:10;list-style-type:none;" id="result"></ul>
+      <div class="row" style="margin-right: 0;margin-left: 0;margin-top: 5px;">
+        <label class="col-9" style="font-size: 30px;"><b> Logs</b> </label>
+    		<div class="col-3" style="margin-right: 0;margin-top: 5px;"><button class="btn btn-success" type="button" data-toggle="modal" data-target="#exampleModal">Register</button>
+        </div>
+    		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form id="profile">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Registration Form</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          {% csrf_token %}
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" required class="form-control" id="name" name="name" aria-describedby="emailHelp">
+            </div>
+            <div class="form-group">
+              <label for="designation">Designation</label>
+              <input type="text" required class="form-control" id="designation" name="designation" aria-describedby="emailHelp">
+            </div>
+            <div class="form-group">
+              <label for="password">Contact Number</label>
+              <input type="tel" required class="form-control" id="mno" name="Contact Number">
+            </div>
+            <!-- <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="check1" name="check" onclick="myCheck()">
+              <label class="form-check-label" for="PermenantE">Permenant Employee</label>
+            </div> -->
+            <div class="form-group">
+              <label for="exampleInputPassword1" id="duration">Access Time Limit</label>
+              <input type="date" required class="form-control" id="duration1" name="duration1" >
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="reset" class="btn btn-secondary">Clear</button>
+        <button type="button" class="btn btn-primary" name="capture" id="capture">Capture Image</button>
+        <button type="submit" class="btn btn-primary" name="button" id="button">Register</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+    	</div>
+      <div id="logs"></div>
+    </div>
+  </div>
+
+     <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-app.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+  <script type='text/javascript' src="static/js/jquery.min.js"> </script>
+  
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+               https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase.js"></script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.278.1/aws-sdk.min.js"></script>
+  <script src="https://kit.fontawesome.com/94c3cf727d.js" crossorigin="anonymous"></script>
+<script src="https://vjs.zencdn.net/6.6.3/video.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.14.1/videojs-contrib-hls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- <script src="http://code.jquery.com/jquery-latest.min.js"></script> -->
+<script type="text/javascript" src="{% static 'js/logs.js'%}"></script>
+	</body>
+</html>
