@@ -8,17 +8,42 @@ import datetime as dt
 import time
 import pyrebase
 import pytz
-import firebase
+#import firebase
+import base64
+import hashlib
+from Crypto.Cipher import AES
+from Crypto import Random
+
 
 Config = {
-  "apiKey": "AIzaSyBplgfDMaVZSDahuI2RwF24a7e2K4vVXcs",
-  "authDomain": "videobase-dynamic-auth-system.firebaseapp.com",
-  "databaseURL": "https://videobase-dynamic-auth-system.firebaseio.com",
-  "projectId": "videobase-dynamic-auth-system",
-  "storageBucket": "videobase-dynamic-auth-system.appspot.com",
-  "messagingSenderId": "542414051699",
-  "appId": "1:542414051699:web:043b564a6117971ac88d06"
-}
+    "apiKey": "AIzaSyBqH-1SFbLkCjaW_Qilj7TQq-2E3cy43FQ",
+    "authDomain": "iot-project-e0803.firebaseapp.com",
+    "databaseURL": "https://iot-project-e0803-default-rtdb.firebaseio.com/",
+    "projectId": "iot-project-e0803",
+    "storageBucket": "iot-project-e0803.appspot.com",
+    "messagingSenderId": "292898203599",
+    "appId": "1:292898203599:web:382bc1a3eb5c9e28c4d4ba",
+    "measurementId": "G-FY4R61HR0P"
+  };
+
+# First let us encrypt secret message
+BLOCK_SIZE = 16
+pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)
+unpad = lambda s: s[:-ord(s[len(s) - 1:])]
+ 
+password = "0A1B2C3D4E5F6A7B8C9D0E1F2A3B3C4D"
+ 
+ 
+def encrypt(raw):
+    res = []
+    for i in raw:
+        i = str(i)    
+        private_key = hashlib.sha256(password.encode("utf-8")).digest()
+        i = pad(i).encode()
+        iv = Random.new().read(AES.block_size)
+        cipher = AES.new(private_key, AES.MODE_CBC, iv)
+        res.append(base64.b64encode(iv + cipher.encrypt(i)).decode())
+    return res
 
 firebase=pyrebase.initialize_app(Config)
 storage=firebase.storage()
@@ -63,15 +88,17 @@ def upload(paths_to_images,phone_number,expdate,name,sec_code,status,designation
     # List of image urls
     urls = []
     # Loop over images to get the encoding one by one
+    print(paths_to_images)
     for path_to_image in paths_to_images:
         # Get face encodings from the image
         face_encodings_in_image = get_face_encodings(path_to_image)
+        print(len(face_encodings_in_image))
         # Make sure there's exactly one face in the image
         if len(face_encodings_in_image) != 1:
             print("Please change image: " + path_to_image + " - it has " + str(len(face_encodings_in_image)) + " faces; it can only have one")
             exit()
         # Append the face encoding found in that image to the list of face encodings we have
-        face_encodings.append(face_encodings_in_image[0].tolist())
+        face_encodings.append(encrypt(face_encodings_in_image[0]))
         now = dt.datetime.now(tz=tz)
         path_to_cloud="Known_faces/"+phone_number+"_"+str(now.timestamp())+".jpg"
         #to upload the image in storage
@@ -96,5 +123,6 @@ def upload(paths_to_images,phone_number,expdate,name,sec_code,status,designation
     db.child(add).set(data_to_upload)
     # print("Uploaded"+path_to_image)
 
+# CALL UPLOAD() FUNTION HERE
 
 print('Done')
