@@ -15,3 +15,21 @@ class LED_code:
     "measurementId": "G-FY4R61HR0P"
   	};
     app = pyrebase.initialize_app(config)
+    db=app.database()
+    flag = 1
+    Green=LED(18)
+    Red=LED(8)
+    while(1):
+        i=db.child('/Led/flag').get()
+        print(i.val())
+        if(i.val()==1):
+            Red.off()
+            Green.on()
+            time.sleep(5)
+            db.child('/Led').set({
+            'flag': 0})
+            Green.off()
+            flag=1
+        if(i.val()==0 and flag ==1):
+            flag = 0
+            Red.on()
