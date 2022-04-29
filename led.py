@@ -14,3 +14,7 @@ class LED_code:
     "appId": "1:292898203599:web:382bc1a3eb5c9e28c4d4ba",
     "measurementId": "G-FY4R61HR0P"
   	};
+<<<<<<< HEAD
+=======
+    app = pyrebase.initialize_app(config)
+>>>>>>> ea8ae98a98599454e4e1fd727c200e96a204a550
